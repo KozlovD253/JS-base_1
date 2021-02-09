@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+<script>
+
+    //1. Создать функцию, генерирующую шахматную доску. При этом можно использовать любые html-теги по своему желанию. Доска должна быть разлинована соответствующим образом, т.е. чередовать черные и белые ячейки. Строки должны нумероваться числами от 1 до 8, столбцы – латинскими буквами A, B, C, D, E, F, G, H.
+
+    function chess() {
+        document.querySelector('title').textContent = 'Chess board';
+
+        const letters = '<tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th></tr>';
+        const whiteCell = '<td style="background: #eee; border: 1px solid; width: 2em; height: 2em"></td>';
+        const blackCell = '<td style="background: #000; border: 1px solid; width: 2em; height: 2em"></td>';
+        let cellCount = 8;
+        let cellIsWhite = true;
+
+        document.querySelector('body').insertAdjacentHTML('afterbegin', '<table class="chess-board" style="border-spacing: 0; border-collapse: collapse"><tbody class="chess-board-body"></tbody></table>');
+        document.querySelector('.chess-board-body').insertAdjacentHTML('afterbegin', letters);
+
+        while (cellCount > 0) {
+            document.querySelector('.chess-board-body').insertAdjacentHTML('beforeend', `<tr class = line${cellCount}><th>${cellCount}</th></tr>`);
+            for (let i = 1; i <= 8; i++) {
+                if (cellIsWhite) {
+                    document.querySelector(`.line${cellCount}`).insertAdjacentHTML('beforeend', whiteCell);
+                } else {
+                    document.querySelector(`.line${cellCount}`).insertAdjacentHTML('beforeend', blackCell);
+                }
+                cellIsWhite = !cellIsWhite;
+            }
+            cellCount--;
+            cellIsWhite = !cellIsWhite;
+        }
+    }
+
+    chess();
+</script>
+</body>
+
+</html>
