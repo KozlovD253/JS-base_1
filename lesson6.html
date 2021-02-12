@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars_Shop</title>
+
+    <style>
+        .conteiner {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+        }
+
+        .cart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            border: 3px solid black;
+        }
+
+        .cart-ico {
+            width: 150px;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .product {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            height: 400px;
+            margin: 10px;
+            border: 3px solid black;
+        }
+
+        .product-img {
+            width: 280px;
+        }
+
+        .add-to-cart-button {
+            position: absolute;
+            margin-top: 370px;
+        }
+
+        .clear-cart-button {
+            margin-top: 64px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="conteiner">
+    <div class="products">
+    </div>
+
+    <div class="cart">
+        <img class="cart-ico" src="pic/cart.png" alt="корзина">
+        <p class="cart-text"></p>
+        <div class="cart-products">
+
+        </div>
+        <button class="clear-cart-button">Очистить корзину</button>
+    </div>
+</div>
+
+<script>
+
+    "use strict";
+
+    const cart = {
+        productsList: [],
+        clearCartButtonClass: 'clear-cart-button',
+        cartProductsClass: 'cart-products',
+
+        init() {
+            this.render();
+            document.querySelector(`.${this.clearCartButtonClass}`).addEventListener('click', (event) => {
+                this.clearCartButtonClikcHandler(event);
+            });
+        },
+
+        clearCartButtonClikcHandler(event) {
+            if (event.target.className !== this.clearCartButtonClass) return;
+            this.productsList = [];
+            this.render();
+        },
+
+        totalPrice() {
+            const basketPrice = this.productsList.reduce((sum, products) => sum + products.price * products.quantity, 0);
+            return basketPrice;
+        },
+
+        productsCount() {
+            return this.productsList.length;
+        },
+
+        textInfo() {
+            if (this.totalPrice() == 0) return 'Корзина пуста';
+            return `В корзине ${this.productsCount()} товара(ов) на ${this.totalPrice()}руб.`;
+        },
+
+        render() {
+            document.querySelector('.cart-text').textContent = `${cart.textInfo()}`;
+            document.querySelector('.cart-products').innerHTML = '';
+            this.productsList.forEach(function (item) {
+                document.querySelector('.cart-products').insertAdjacentHTML('beforeEnd',
+                    `<div class = "product-in-cart"
+                            <p>${item.name}, ${item.quantity}*${item.price}руб = ${item.quantity * item.price}руб
+                        </div>`);
+            })
+        },
+
+        addProduct(product) {
+            let prod = { ...product };
+            let alreadyInCart = this.productsList.find(item => item.uniqueId === prod.uniqueId);
+            prod.quantity = 1;
+            !!alreadyInCart ? alreadyInCart.quantity += 1 : this.productsList.push(prod);
+            this.render();
+        },
+    }
+
+    const products = {
+        addToCartButtonClass: 'add-to-cart-button',
+        productsClass: '.products',
+
+        productsList: [
+            {
+                uniqueId: '1',
+                name: 'tesla',
+                price: 18300,
+                quantity: 7,
+            },
+            {
+                uniqueId: '2',
+                name: 'bmw',
+                price: 22100,
+                quantity: 1,
+            },
+            {
+                uniqueId: '3',
+                name: 'smart',
+                price: 14300,
+                quantity: 4,
+            },
+            {
+                uniqueId: '4',
+                name: 'skoda',
+                price: 1000,
+                quantity: 3,
+            },
+            {
+                uniqueId: '5',
+                name: 'audi',
+                price: 20000,
+                quantity: 2,
+            },
+        ],
+
+        init() {
+            products.render();
+            document.querySelector(this.productsClass).addEventListener('click', (event) => {
+                this.toCartButtonClikcHandler(event);
+            });
+        },
+
+        toCartButtonClikcHandler(event) {
+            if (event.target.className !== this.addToCartButtonClass) return;
+            this.productSearchById(event.target.dataset.unique_id);
+        },
+
+        productSearchById(id) {
+            this.productsList.forEach(product => {
+                if (product.uniqueId === id) {
+                    this.addToCart(product);
+                }
+            });
+        },
+
+        addToCart(product) {
+            cart.addProduct(product);
+        },
+
+        render() {
+            document.querySelector('.products').innerHTML = '';
+            this.productsList.forEach(function (item) {
+                document.querySelector('.products').insertAdjacentHTML('beforeEnd',
+                    `<div class="product">
+                            <a href="#"><img class="product-img" src="img/${item.img}" alt="${item.name}"></a>
+                            <p>${item.name}</p>
+                            <p>Цена: ${item.price}руб</p>
+                            <button class="add-to-cart-button" data-unique_id="${item.uniqueId}">В корзину</button>
+                        </div>`);
+            })
+        },
+    }
+
+    products.init();
+    cart.init();
+
+</script>
+</body>
+
+</html>
